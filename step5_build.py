@@ -35,7 +35,7 @@ from common import db, log, section
 # ────────────────────────────────────────────────────────────
 
 SITE_NAME = "배당체크"
-BASE_URL = "https://baedang.co.kr"         # 끝에 / 없이
+BASE_URL = "https://costcheck.kr"          # 끝에 / 없이
 OUT = "docs"
 GUIDE_SRC = "guides"                        # 직접 쓴 .md 를 넣는 폴더
 
@@ -43,12 +43,19 @@ PUBLISH_ALL = False                         # AdSense 승인 후 True
 YIELD_CAP = 15.0
 DATA_FLOOR = 2014
 
+# 검색엔진 소유권 확인용 메타 태그.
+# 파일 업로드 방식은 재빌드 때 docs/ 가 초기화되면서 사라지므로 쓰지 않는다.
+# 각 도구에서 발급받은 content 값을 채우면 모든 페이지 <head> 에 들어간다.
+VERIFY_META = {
+    "naver-site-verification": "978a1427ab793680fd2672125cf432b7e54e2f1b",
+    "google-site-verification": "",
+}
+
 # 1차 공개 기준
 FIRST_WAVE_GROWTH_MIN = 4                   # 연속 증액 4년 이상
 FIRST_WAVE_YIELD_TOP = 60                   # 배당수익률 상위 N
 
-GUIDE_TOPICS = [
-    ("기준일-배당락일", "배당기준일과 배당락일, 언제까지 사야 배당을 받나"),
+GUIDE_TOPICS = [    ("기준일-배당락일", "배당기준일과 배당락일, 언제까지 사야 배당을 받나"),
     ("배당소득세", "배당소득세 15.4%와 금융소득종합과세 2,000만원"),
     ("배당성향", "배당성향이 높으면 왜 위험 신호인가"),
     ("우선주-배당", "우선주 배당이 보통주보다 많은 이유"),
@@ -247,6 +254,8 @@ def page(title, desc, body, path_depth, indexed=True, canonical=""):
     up = "../" * path_depth
     robots = ("index,follow" if (indexed or PUBLISH_ALL) else "noindex,follow")
     canon = f'<link rel="canonical" href="{BASE_URL}{canonical}">' if canonical else ""
+    verify = "\n".join(f'<meta name="{k}" content="{v}">'
+                       for k, v in VERIFY_META.items() if v)
     return f"""<!doctype html>
 <html lang="ko">
 <head>
@@ -255,6 +264,7 @@ def page(title, desc, body, path_depth, indexed=True, canonical=""):
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 <meta name="robots" content="{robots}">
+{verify}
 {canon}
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -782,13 +792,19 @@ def build_guides(items):
         if left:
             log(f"    [경고] {s}.md — 알 수 없는 변수 {sorted(set(left))}")
 
+        # 원고 첫 줄의 H1 을 제목으로 사용 (없으면 GUIDE_TOPICS 값)
+        h1 = next((re.sub(r"^#\s+", "", l).strip() for l in text.splitlines()
+                   if l.strip().startswith("# ")), None)
+        title = h1 or t
+
         first = next((l.strip() for l in text.splitlines()
-                      if l.strip() and not l.startswith("#")), t)
-        body = (f'<section class="head"><h1>{esc(t)}</h1></section>'
+                      if l.strip() and not l.startswith("#")), title)
+        desc = re.sub(r"[*`\[\]]|\(/[^)]*\)", "", first)[:150]
+        body = (f'<section class="head"><h1>{esc(title)}</h1></section>'
                 f'<div class="prose">{md(text)}</div>')
         write(os.path.join(OUT, "guide", s, "index.html"),
-              page(f"{t} | {SITE_NAME}", first[:150], body, 2, True, f"/guide/{s}/"))
-        made.append((s, t))
+              page(f"{title} | {SITE_NAME}", desc, body, 2, True, f"/guide/{s}/"))
+        made.append((s, title))
 
     if used_vars:
         log(f"    치환된 변수: {sorted(used_vars)}")
@@ -816,7 +832,6 @@ def main():
         shutil.rmtree(OUT)
     os.makedirs(OUT)
     write(os.path.join(OUT, "style.css"), CSS.strip())
-    write(os.path.join(OUT, "CNAME"), "baedang.co.kr")
 
     items = load(conn)
     by_code = {i["code"]: i for i in items}
