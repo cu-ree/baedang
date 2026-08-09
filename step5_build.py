@@ -832,6 +832,7 @@ def main():
         shutil.rmtree(OUT)
     os.makedirs(OUT)
     write(os.path.join(OUT, "style.css"), CSS.strip())
+    write(os.path.join(OUT, "CNAME"), "baedang.co.kr")
 
     items = load(conn)
     by_code = {i["code"]: i for i in items}
