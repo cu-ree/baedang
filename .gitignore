@@ -1,0 +1,15 @@
+# API 원본 응답 — 용량이 크고 재생성 가능
+raw/
+
+# 빌드 산출물 — Actions 에서 매번 생성해 Cloudflare 로 직접 배포
+site/
+
+# 로컬 부산물
+__pycache__/
+*.pyc
+*.log
+conflicts.txt
+rejected.txt
+mapping_mismatch.txt
+
+# dividend.db 는 제외하지 않는다 (재수집 방지용으로 커밋)

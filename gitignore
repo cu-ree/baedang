@@ -1,0 +1,13 @@
+# API 원본 응답 — 1만 개 넘는 JSON. 재생성 가능하므로 제외
+raw/
+
+# 로컬 부산물
+__pycache__/
+*.pyc
+*.log
+conflicts.txt
+rejected.txt
+mapping_mismatch.txt
+
+# site/ 는 제외하지 않는다 — GitHub Pages 가 이 폴더를 그대로 서빙
+# dividend.db 도 제외하지 않는다 — fetch_log 로 재수집 방지

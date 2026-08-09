@@ -1,0 +1,2 @@
+# step1_stocks.py 의 우선주 확보용. 없어도 KIND 로 폴백되지만 우선주가 빠진다.
+finance-datareader>=0.9.90
