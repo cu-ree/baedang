@@ -16,7 +16,7 @@ import os
 import re
 import sys
 
-SITE = "site"
+SITE = "docs"
 
 MIN_STOCK_PAGES = 1200      # 정상값 약 1,640
 MIN_SITEMAP_URLS = 150      # 정상값 약 235

@@ -36,7 +36,7 @@ from common import db, log, section
 
 SITE_NAME = "배당체크"
 BASE_URL = "https://baedang.co.kr"         # 끝에 / 없이
-OUT = "site"
+OUT = "docs"
 GUIDE_SRC = "guides"                        # 직접 쓴 .md 를 넣는 폴더
 
 PUBLISH_ALL = False                         # AdSense 승인 후 True
