@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://costcheck.kr/sitemap.xml
+Sitemap: https://baedang.co.kr/sitemap.xml

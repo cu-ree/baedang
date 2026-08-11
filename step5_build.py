@@ -35,7 +35,7 @@ from common import db, log, section
 # ────────────────────────────────────────────────────────────
 
 SITE_NAME = "배당체크"
-BASE_URL = "https://costcheck.kr"          # 끝에 / 없이
+BASE_URL = "https://baedang.co.kr"          # 끝에 / 없이
 OUT = "docs"
 GUIDE_SRC = "guides"                        # 직접 쓴 .md 를 넣는 폴더
 
